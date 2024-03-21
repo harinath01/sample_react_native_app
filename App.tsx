@@ -5,113 +5,67 @@
  * @format
  */
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  SafeAreaView,
-  ScrollView,
+  View,
   StatusBar,
   StyleSheet,
-  Text,
   useColorScheme,
-  View,
 } from 'react-native';
+
+import Video, { DRMType, } from 'react-native-video';
 
 import {
   Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
+  const [uri, setUri] = useState('')
+
+  useEffect(() => {
+    setTimeout(() => {
+      setUri("https://d1uyp6xlgityir.cloudfront.net/institute/support/courses/drm-videos/videos/transcoded/f98d47fd09b942d7aafc25f7a150a000/video.mpd")
+    }, 500)
+  }, [])
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
+    <View>
+      <Video
+        source={{
+          type: "mpd",
+          uri: 'https://d1uyp6xlgityir.cloudfront.net/institute/support/courses/drm-videos/videos/transcoded/f98d47fd09b942d7aafc25f7a150a000/video.mpd'
+        }}
+        drm={{
+          type: DRMType.WIDEVINE,
+          licenseServer: "https://support.testpress.in/api/v2.5/chapter_contents/70/drm_license/?access_token=73a7af36-91ad-4736-96b3-f718ca253f85"
+        }}
+        style={styles.videoPlayer}
+        resizeMode="contain"
+        paused={false}
+        controls={true}
+        onError={console.log}
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: '#000',
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
+  videoPlayer: {
+    backgroundColor: "black",
+    width: '100%',
+    height: 240,
   },
 });
 
