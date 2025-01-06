@@ -11,7 +11,7 @@ function App(): React.JSX.Element {
       return {
         type: DRMType.FAIRPLAY,
         licenseServer: 'https://app.tpstreams.com/api/v1/6eafqn/assets/AgAFNEJn3kt/drm_license/?access_token=f9b11692-78c5-4d14-9385-5f1efb0b8f4e&drm_type=fairplay',
-        certificateUrl: CERT_URL,
+        certificateUrl: CERT_URL, 
         getLicense: (spcString: string, contentId: string, licenseUrl: string) => {
           return axios
             .post(
@@ -38,13 +38,23 @@ function App(): React.JSX.Element {
     };
   };
 
+  const getSourceConfig = () => {
+    if (Platform.OS === 'ios') {
+      return {
+        type: 'm3u8',
+        uri: 'https://d384padtbeqfgy.cloudfront.net/transcoded/AgAFNEJn3kt/video.m3u8'
+      };
+    }
+    return {
+      type: 'mpd',
+      uri: 'https://d384padtbeqfgy.cloudfront.net/transcoded/AgAFNEJn3kt/video.mpd'
+    };
+  };
+
   return (
     <View>
       <Video
-        source={{
-          type: "mpd",
-          uri: 'https://d384padtbeqfgy.cloudfront.net/transcoded/AgAFNEJn3kt/video.mpd'
-        }}
+        source={getSourceConfig()}
         drm={getDrmConfig()}
         style={styles.videoPlayer}
         resizeMode="contain"
